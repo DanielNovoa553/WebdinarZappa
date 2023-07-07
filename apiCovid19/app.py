@@ -25,6 +25,7 @@ def generate_token():
 
 def verify_token(token):
     """ function to verify and decode token
+    args: token dic
     Returns: payload or error message if token is invalid or expired
     except jwt.ExpiredSignatureError: if token is expired
     except jwt.InvalidTokenError: if token is invalid

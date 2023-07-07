@@ -11,16 +11,15 @@ def connectdb():
         False: if connection fails
     """
 
-    global conexion
     try:
-        conexion = pymysql.connect(host='localhost',
+        connection = pymysql.connect(host='localhost',
                                    user='root',
                                    password='',
                                    db='webdinarZappa')
 
-        return conexion
+        return connection
 
     except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
-        print("Ocurrió un error al conectar, detalle del error: ", e)
+        print("Error al conectar con la base de datos, detalle del error: ", e)
         exit()
 
