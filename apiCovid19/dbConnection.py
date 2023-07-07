@@ -21,5 +21,6 @@ def connectdb():
 
     except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
         print("Error al conectar con la base de datos, detalle del error: ", e)
-        exit()
+        return e
+
 

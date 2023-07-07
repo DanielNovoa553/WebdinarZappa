@@ -49,36 +49,40 @@ def login():
     """
 
     connection = connectdb()
-    cursor = connection.cursor()
-    #validar json
-    username = request.json.get('username')
-    password = request.json.get('password')
-    if not username or not password:
-        return jsonify({'error': 'Username or password is missing.'})
+    if isinstance(connection, Exception):
+        return jsonify({'Error al conectar con la base de datos, detalle: ': str(connection)})
+
     else:
-        try:
-            sql = f"SELECT * FROM usuarios WHERE email = '{username}' AND password = '{password}'"
-            cursor.execute(sql)
-            result = cursor.fetchone()
-            if result:
-                token = generate_token()
-                expiration_time_mexico = token[1].strftime("%d-%m-%Y %H:%M:%S")
+        cursor = connection.cursor()
+        #validar json
+        username = request.json.get('username')
+        password = request.json.get('password')
+        if not username or not password:
+            return jsonify({'error': 'Username or password is missing.'})
+        else:
+            try:
+                sql = f"SELECT * FROM usuarios WHERE email = '{username}' AND password = '{password}'"
+                cursor.execute(sql)
+                result = cursor.fetchone()
+                if result:
+                    token = generate_token()
+                    expiration_time_mexico = token[1].strftime("%d-%m-%Y %H:%M:%S")
+                    connection.close()
+                    cursor.close()
+                    return jsonify({'token': token[0],
+                                    'status': 'Session logged in successfully',
+                                    'message': 'Token generated successfully.',
+                                    'expiration_time': expiration_time_mexico})
+                else:
+                    connection.close()
+                    cursor.close()
+
+                    return jsonify({'error': 'Invalid credentials.'})
+
+            except Exception as e:
                 connection.close()
                 cursor.close()
-                return jsonify({'token': token[0],
-                                'status': 'Session logged in successfully',
-                                'message': 'Token generated successfully.',
-                                'expiration_time': expiration_time_mexico})
-            else:
-                connection.close()
-                cursor.close()
-
-                return jsonify({'error': 'Invalid credentials.'})
-
-        except Exception as e:
-            connection.close()
-            cursor.close()
-            return jsonify({'error': str(e)})
+                return jsonify({'error': str(e)})
 
 
 @app.route('/get_covid_data')
