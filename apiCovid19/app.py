@@ -9,6 +9,9 @@ app.config['SECRET_KEY'] = 'GHgsfvxhwdcXFty"#&/()=)'
 
 
 def generate_token():
+    """ function to generate access token
+    Returns: token and expiration time in Mexico City
+    """
     time = datetime.datetime.utcnow()
     plus_time = datetime.timedelta(minutes=5)
     expiration_time_mexico = datetime.datetime.now() + plus_time
@@ -21,6 +24,11 @@ def generate_token():
 
 
 def verify_token(token):
+    """ function to verify token
+    Returns: payload or error message if token is invalid or expired
+    except jwt.ExpiredSignatureError: if token is expired
+    except jwt.InvalidTokenError: if token is invalid
+    """
     try:
         payload = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
         return payload
@@ -32,10 +40,16 @@ def verify_token(token):
 
 @app.route('/login')
 def login():
+    """ function to log in and generate token
+    Returns: token and expiration time in Mexico City if credentials are valid or error message if not valid
+    error: if username or password is missing
+    error: if invalid credentials
+    except error to connect to database
+    """
+
     connection = connectdb()
     cursor = connection.cursor()
     #validar json
-
     username = request.json.get('username')
     password = request.json.get('password')
     if not username or not password:
@@ -66,12 +80,13 @@ def login():
             return jsonify({'error': str(e)})
 
 
-
-
-
-
 @app.route('/get_covid_data')
 def get_covid_data():
+    """ function to get Covid 19 data
+    Returns: Covid 19 data or error message if token is invalid or expired
+    error: if token is missing
+    except error to get covid data from api
+    """
     global status
     try:
         token = request.args.get('token')
