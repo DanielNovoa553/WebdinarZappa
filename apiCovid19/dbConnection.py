@@ -1,14 +1,10 @@
-# hacer una funcion que se conecte a una base de datos mysql y maneje excepciones
 import pymysql
 
 
 def connectdb():
     """
     Connect to database
-    Returns:
-        con: connection
-        raise Exception: if connection fails
-        False: if connection fails
+    Returns:  connection object or error message if connection fails
     """
 
     try:
