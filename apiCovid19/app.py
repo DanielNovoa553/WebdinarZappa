@@ -92,7 +92,6 @@ def get_covid_data():
     error: if token is missing
     except error to get covid data from api
     """
-    global status
     try:
         token = request.args.get('token')
         if not token:
@@ -107,10 +106,7 @@ def get_covid_data():
         data = response.json()
         print(data)
 
-        if 'cases' not in data:
-            return jsonify({'error': 'Data structure does not match expectations.'})
-
-        # Create a dictionary with the data you want to display
+        # Create a dictionary with the data we want to display
         covid_data = {
             'casos': '{:,}'.format(data['cases']),
             'recuperados':'{:,}'.format(data['recovered']),

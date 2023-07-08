@@ -3,7 +3,7 @@ import pymysql
 
 def connectdb():
     """
-    Connect to database
+      Function to connect to database webdinarZappa
     Returns:  connection object or error message if connection fails
     """
 
