@@ -37,7 +37,7 @@ def verify_token(token):
         return {'error': 'Token a expirado.',
                 'status': False}
     except jwt.InvalidTokenError:
-        return {'error': 'Token Invalido.'}
+        return {'error': 'Token InvalidoO.'}
 
 
 @app.route('/login', methods=['GET'], strict_slashes=False, endpoint='login', defaults={'token': None})
