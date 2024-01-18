@@ -1,0 +1,17 @@
+{
+    "dev": {
+        "app_function": "apiCovid19.app.app",
+        "profile_name": "default",
+        "project_name": "webdinarzappa",
+        "runtime": "python3.9",
+        "s3_bucket": "zappa-sonhl5ofl"
+    },
+    "prod": {
+        "app_function": "apiCovid19.app.app",
+        "aws_region": "us-east-1",
+        "profile_name": "default",
+        "project_name": "webdinarzappa",
+        "runtime": "python3.9",
+        "s3_bucket": "zappa-sonhl5ofl-prod"
+    }
+}

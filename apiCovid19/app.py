@@ -25,7 +25,7 @@ def generate_token():
 
 def verify_token(token):
     """ function to verify and decode token
-    args: token dic
+    args: token
     Returns: payload or error message if token is invalid or expired
     except jwt.ExpiredSignatureError: if token is expired
     except jwt.InvalidTokenError: if token is invalid
@@ -34,12 +34,13 @@ def verify_token(token):
         payload = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
         return payload
     except jwt.ExpiredSignatureError:
-        return {'error': 'Token has expired.'}
+        return {'error': 'Token a expirado.',
+                'status': False}
     except jwt.InvalidTokenError:
-        return {'error': 'Invalid token.'}
+        return {'error': 'Token Invalido.'}
 
 
-@app.route('/login')
+@app.route('/login', methods=['GET'], strict_slashes=False, endpoint='login', defaults={'token': None})
 def login():
     """ function to log in and generate token
     Returns: token and expiration time in Mexico City if credentials are valid or error message if not valid
@@ -54,11 +55,11 @@ def login():
 
     else:
         cursor = connection.cursor()
-        #validar json
+        # json validation
         username = request.json.get('username')
         password = request.json.get('password')
         if not username or not password:
-            return jsonify({'error': 'Username or password is missing.'})
+            return jsonify({'error': 'Usuario o contraseña incorrectos.'})
         else:
             try:
                 sql = f"SELECT * FROM usuarios WHERE email = '{username}' AND password = '{password}'"
@@ -70,14 +71,14 @@ def login():
                     connection.close()
                     cursor.close()
                     return jsonify({'token': token[0],
-                                    'status': 'Session logged in successfully',
-                                    'message': 'Token generated successfully.',
+                                    'status': 'Inicio de sesión exitoso.',
+                                    'message': 'Token generado exitosamente.',
                                     'expiration_time': expiration_time_mexico})
                 else:
                     connection.close()
                     cursor.close()
 
-                    return jsonify({'error': 'Invalid credentials.'})
+                    return jsonify({'error': 'Credenciales invalidas.'})
 
             except Exception as e:
                 connection.close()
@@ -85,7 +86,7 @@ def login():
                 return jsonify({'error': str(e)})
 
 
-@app.route('/get_covid_data')
+@app.route('/get_covid_data', methods=['GET'])
 def get_covid_data():
     """ function to get Covid 19 data
     Returns: Covid 19 data or error message if token is invalid or expired
@@ -109,7 +110,7 @@ def get_covid_data():
         # Create a dictionary with the data we want to display
         covid_data = {
             'casos': '{:,}'.format(data['cases']),
-            'recuperados':'{:,}'.format(data['recovered']),
+            'recuperados': '{:,}'.format(data['recovered']),
             'recuperadosHoy': '{:,}'.format(data['todayRecovered']),
             'activos': '{:,}'.format(data['active']),
             'fallecidos': '{:,}'.format(data['deaths']),
